@@ -1,0 +1,142 @@
+/**
+ * Verificahub Docs theme — palette/fonts mirror the landing
+ * (verificahub-web-landing). Light mode only (dark switch disabled in config).
+ */
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* brand */
+  --vh-bg: #ece7db;
+  --vh-surface: #fbf9f3;
+  --vh-ink: #16130e;
+  --vh-lime: #c7f04b;
+  --vh-lime-deep: #b6e22f;
+  --vh-card-border: #d8d1c1;
+  --vh-hairline: #e2dccd;
+  --vh-text-muted: #534b3c;
+  --vh-text-subtle: #6e6657;
+
+  /* Infima primary = ink (links/active). Lime is used as an accent in CSS. */
+  --ifm-color-primary: #16130e;
+  --ifm-color-primary-dark: #100d0a;
+  --ifm-color-primary-darker: #0c0a07;
+  --ifm-color-primary-darkest: #050403;
+  --ifm-color-primary-light: #2a2418;
+  --ifm-color-primary-lighter: #3a3322;
+  --ifm-color-primary-lightest: #534b3c;
+
+  --ifm-background-color: var(--vh-surface);
+  --ifm-background-surface-color: var(--vh-surface);
+  --ifm-navbar-background-color: rgba(236, 231, 219, 0.86);
+  --ifm-footer-background-color: var(--vh-ink);
+
+  --ifm-font-family-base: 'Golos Text', system-ui, sans-serif;
+  --ifm-heading-font-family: 'Unbounded', sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', monospace;
+  --ifm-code-font-size: 92%;
+
+  --ifm-menu-color-active: var(--vh-ink);
+  --docusaurus-highlighted-code-line-bg: rgba(22, 19, 14, 0.08);
+}
+
+/* ---- navbar ---- */
+.navbar {
+  backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--vh-card-border);
+}
+.navbar__logo img {
+  border-radius: 8px;
+}
+.navbar__title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ---- active sidebar item: lime accent on ink ---- */
+.menu__link--active:not(.menu__link--sublist) {
+  background: var(--vh-ink);
+  color: var(--vh-bg);
+}
+.menu__link--active:not(.menu__link--sublist):hover {
+  background: var(--vh-ink);
+  color: var(--vh-bg);
+}
+
+/* ---- content links: underline so ink links stay distinguishable ---- */
+.markdown a {
+  text-decoration: underline;
+  text-decoration-color: var(--vh-lime-deep);
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+.markdown a:hover {
+  text-decoration-color: var(--vh-ink);
+}
+
+/* ---- inline code & code blocks ---- */
+.markdown code {
+  background: rgba(199, 240, 74, 0.18);
+  border: 1px solid rgba(22, 19, 14, 0.12);
+  border-radius: 6px;
+  padding: 0.08rem 0.32rem;
+}
+.theme-code-block,
+div[class*='codeBlockContainer_'] {
+  border: 1px solid var(--vh-card-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(22, 19, 14, 0.06);
+}
+.theme-code-block code,
+div[class*='codeBlockContainer_'] code {
+  background: transparent !important;
+}
+
+/* ---- buttons ---- */
+.button--primary {
+  --ifm-button-background-color: var(--vh-lime);
+  --ifm-button-border-color: var(--vh-lime);
+  --ifm-button-color: var(--vh-ink);
+}
+.button--primary:hover {
+  background: var(--vh-lime-deep);
+  border-color: var(--vh-lime-deep);
+  color: var(--vh-ink);
+}
+
+::selection {
+  background: var(--vh-lime);
+  color: var(--vh-ink);
+}
+
+/* ---- sticky-footer layout ---- */
+html,
+body,
+#__docusaurus {
+  min-height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+#__docusaurus {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+.main-wrapper {
+  flex: 1 0 auto;
+}
+
+@media (max-width: 996px) {
+  .navbar-sidebar {
+    z-index: 1001;
+    height: 100dvh;
+  }
+  .navbar-sidebar__brand {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--ifm-navbar-background-color);
+  }
+}

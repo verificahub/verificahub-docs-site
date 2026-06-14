@@ -1,0 +1,274 @@
+/**
+ * Verificahub Docs landing — cream/ink/lime palette to match the landing.
+ */
+
+.page {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  background:
+    radial-gradient(820px 360px at 12% 0%, rgba(199, 240, 74, 0.28), transparent 60%),
+    radial-gradient(760px 320px at 88% 6%, rgba(199, 240, 74, 0.14), transparent 56%),
+    linear-gradient(180deg, var(--vh-bg) 0%, var(--vh-surface) 60%, var(--vh-bg) 100%);
+}
+
+.hero,
+.sections {
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  padding: 5rem 0 2.4rem;
+}
+
+.heroInner {
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+  animation: fadeUp 420ms ease-out both;
+}
+
+.eyebrow {
+  margin: 0 0 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(22, 19, 14, 0.16);
+  border-radius: 999px;
+  padding: 0.42rem 0.92rem;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--vh-text-muted);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: var(--ifm-heading-font-family);
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+  color: var(--vh-ink);
+}
+
+.heroLead {
+  margin: 1rem 0 0;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  color: var(--vh-text-muted);
+}
+
+.searchPanel {
+  margin: 1.8rem auto 0;
+  max-width: 760px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  border: 1px solid var(--vh-card-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 40px rgba(22, 19, 14, 0.06);
+}
+
+.searchFallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 680px);
+  border-radius: 999px;
+  padding: 0.85rem 1.15rem;
+  background: var(--vh-lime);
+  color: var(--vh-ink);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 160ms ease;
+}
+.searchFallback:hover {
+  background: var(--vh-lime-deep);
+  color: var(--vh-ink);
+  text-decoration: none;
+}
+
+.quickFilters {
+  margin: 1rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.quickFilter {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--vh-card-border);
+  border-radius: 999px;
+  padding: 0.46rem 0.86rem;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--vh-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+.quickFilter:hover {
+  transform: translateY(-1px);
+  border-color: rgba(22, 19, 14, 0.34);
+  text-decoration: none;
+  color: var(--vh-ink);
+}
+
+.sections {
+  padding: 1rem 0 4.5rem;
+}
+
+.groupList {
+  display: grid;
+  gap: 1.2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.groupBlock {
+  border-radius: 24px;
+  padding: 1.3rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--vh-card-border);
+  box-shadow: 0 16px 38px rgba(22, 19, 14, 0.05);
+}
+
+.groupHeader {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.groupLabel {
+  margin: 0;
+  color: var(--vh-text-muted);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.groupTitle {
+  margin: 0;
+  font-family: var(--ifm-heading-font-family);
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+  color: var(--vh-ink);
+}
+
+.groupDescription {
+  margin: 0.28rem 0 0;
+  color: var(--vh-text-subtle);
+  line-height: 1.55;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.95rem;
+}
+
+.docCard {
+  display: block;
+  height: 100%;
+  padding: 1.05rem 1rem 1rem;
+  border-radius: 18px;
+  border: 1px solid var(--vh-card-border);
+  background: var(--vh-surface);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.docCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(22, 19, 14, 0.28);
+  box-shadow: 0 22px 42px rgba(22, 19, 14, 0.1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.docCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.3rem;
+}
+
+.docCardBadge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.34rem 0.7rem;
+  background: rgba(199, 240, 74, 0.3);
+  color: var(--vh-ink);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.docCardArrow {
+  color: var(--vh-text-subtle);
+}
+
+.docCardTitle {
+  margin: 0 0 0.45rem;
+  font-family: var(--ifm-heading-font-family);
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--vh-ink);
+}
+
+.docCardDescription {
+  margin: 0;
+  color: var(--vh-text-subtle);
+  line-height: 1.55;
+}
+
+.docCardFooter {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--vh-ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.docCardFooter::after {
+  content: '→';
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroInner,
+  .quickFilter,
+  .docCard {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+}
