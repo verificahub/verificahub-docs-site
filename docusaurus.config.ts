@@ -67,11 +67,8 @@ const config: Config = {
       respectPrefersColorScheme: false,
     },
     navbar: {
-      title: 'Verificahub Docs',
-      logo: {
-        alt: 'Verificahub',
-        src: 'img/logo.png',
-      },
+      // Brand (mark + wordmark + DOCS tag) is rendered by the swizzled
+      // src/theme/Navbar/Logo.tsx using the real brand components.
       items: [
         {
           to: '/docs',
