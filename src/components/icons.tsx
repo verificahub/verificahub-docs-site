@@ -131,3 +131,24 @@ export const CheckIcon = (p: IconProps) => (
     <path d="m5 12 4 4 10-10" />
   </Svg>
 )
+
+/* ---- brand / channel glyphs (fill = currentColor) ---- */
+
+export const TelegramIcon = ({size = 20, ...rest}: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...rest}>
+    <path d="M21.9 4.3 18.7 19.4c-.24 1.07-.88 1.33-1.78.83l-4.92-3.62-2.37 2.28c-.26.26-.48.48-.99.48l.35-5.02 9.13-8.25c.4-.35-.08-.55-.62-.2L4.74 13.1l-4.86-1.52c-1.06-.33-1.08-1.06.22-1.57l19-7.32c.88-.33 1.65.2 1.36 1.63z" />
+  </svg>
+)
+
+export const VkIcon = ({size = 20, ...rest}: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 48 48" fill="currentColor" aria-hidden="true" {...rest}>
+    <path d="M25.54 34.5801C14.6 34.5801 8.3601 27.0801 8.1001 14.6001H13.5801C13.7601 23.7601 17.8 27.6401 21 28.4401V14.6001H26.1602V22.5001C29.3202 22.1601 32.6398 18.5601 33.7598 14.6001H38.9199C38.0599 19.4801 34.4599 23.0801 31.8999 24.5601C34.4599 25.7601 38.5601 28.9001 40.1201 34.5801H34.4399C33.2199 30.7801 30.1802 27.8401 26.1602 27.4401V34.5801H25.54Z" />
+  </svg>
+)
+
+export const EmailIcon = ({size = 20, ...rest}: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...rest}>
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="m3 7 9 6 9-6" />
+  </svg>
+)

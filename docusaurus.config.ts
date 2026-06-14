@@ -90,42 +90,7 @@ const config: Config = {
           : []),
       ],
     },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Документация',
-          items: [
-            {label: 'Быстрый старт', to: '/docs/start/'},
-            {label: 'API', to: '/docs/api/'},
-            {label: 'Публичная оферта', to: '/docs/legal/public_offer/'},
-            {label: 'Политика конфиденциальности', to: '/docs/legal/privacy_policy/'},
-          ],
-        },
-        {
-          title: 'Продукт',
-          items: [
-            {label: 'Verificahub', href: 'https://verificahub.ru'},
-            {label: 'Тарифы', href: 'https://verificahub.ru/pricing'},
-            {label: 'Контакты', href: 'https://verificahub.ru/contacts'},
-          ],
-        },
-        {
-          title: 'Репозитории',
-          items: [
-            {
-              label: 'Контент документации',
-              href: 'https://github.com/verificahub/verificahub-docs',
-            },
-            {
-              label: 'Сайт документации',
-              href: 'https://github.com/verificahub/verificahub-docs-site',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Verificahub. Built with Docusaurus.`,
-    },
+    // Footer is rendered by the swizzled src/theme/Footer (mirrors verificahub.ru).
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
