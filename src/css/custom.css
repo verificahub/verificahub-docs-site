@@ -229,6 +229,9 @@ div[class*='codeBlockContainer_'] code {
   .vh-foot-grid {
     grid-template-columns: 1fr;
   }
+  .vh-footer__inner {
+    padding: 44px 20px 28px;
+  }
 }
 
 /* ---- sticky-footer layout ---- */
@@ -251,6 +254,11 @@ body {
 }
 
 @media (max-width: 996px) {
+  /* dial the custom navbar padding back toward Docusaurus' mobile default so
+     the brand (logo + wordmark + DOCS tag) and the hamburger toggle don't crowd */
+  .navbar__inner {
+    padding: 0 16px;
+  }
   .navbar-sidebar {
     z-index: 1001;
     height: 100dvh;
