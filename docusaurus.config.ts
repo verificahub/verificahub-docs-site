@@ -28,6 +28,43 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
+  // favicon.ico is emitted from the `favicon` field above; these cover the
+  // PNG variants, Apple touch icon, and the brand theme color.
+  headTags: [
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '32x32',
+        href: '/img/favicon-32x32.png',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '16x16',
+        href: '/img/favicon-16x16.png',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'apple-touch-icon',
+        href: '/img/apple-touch-icon.png',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'theme-color',
+        content: '#ece7db',
+      },
+    },
+  ],
+
   i18n: {
     defaultLocale: 'ru',
     locales: ['ru'],
