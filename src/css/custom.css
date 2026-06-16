@@ -245,13 +245,10 @@ div[class*='codeBlockContainer_'] code {
   border: 1px solid var(--vh-card-border);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 10px 26px rgba(22, 19, 14, 0.05);
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  transition: border-color 180ms ease;
 }
 .pagination-nav__link.vh-pager:hover {
-  transform: translateY(-3px);
   border-color: rgba(22, 19, 14, 0.28);
-  box-shadow: 0 22px 42px rgba(22, 19, 14, 0.1);
 }
 .vh-pager--next {
   flex-direction: row-reverse;
@@ -262,23 +259,11 @@ div[class*='codeBlockContainer_'] code {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid var(--vh-card-border);
-  background: var(--vh-surface);
   color: var(--vh-ink);
-  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+  transition: color 180ms ease;
 }
 .vh-pager:hover .vh-pager__icon {
-  background: var(--vh-lime);
-  border-color: var(--vh-lime);
-}
-.vh-pager--prev:hover .vh-pager__icon {
-  transform: translateX(-3px);
-}
-.vh-pager--next:hover .vh-pager__icon {
-  transform: translateX(3px);
+  color: var(--vh-lime-deep);
 }
 
 .vh-pager__text {
