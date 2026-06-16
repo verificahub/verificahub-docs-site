@@ -31,7 +31,9 @@
   --ifm-footer-background-color: var(--vh-ink);
 
   --ifm-font-family-base: 'Golos Text', system-ui, sans-serif;
-  --ifm-heading-font-family: 'Unbounded', sans-serif;
+  /* Headings use the plain body family, not the Unbounded logotype display
+     font (that stays reserved for the brand wordmark/logo). */
+  --ifm-heading-font-family: 'Golos Text', system-ui, sans-serif;
   --ifm-font-family-monospace: 'JetBrains Mono', monospace;
   --ifm-code-font-size: 92%;
 
