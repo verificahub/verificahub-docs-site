@@ -76,8 +76,6 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl:
-            'https://github.com/verificahub/verificahub-docs/tree/production/',
         },
         blog: false,
         theme: {

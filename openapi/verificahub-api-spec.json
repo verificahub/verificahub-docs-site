@@ -1,0 +1,4337 @@
+{
+  "x-generator": "NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Verificahub API",
+    "description": "Flash-call phone verification — external (§2) and gateway (§3) surfaces.",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5003"
+    }
+  ],
+  "paths": {
+    "/v1/webhooks/tbank": {
+      "post": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Receive T-Bank payment notifications.",
+        "description": "Validated by the terminal-password token; updates the matching top-up.",
+        "operationId": "TBankPaymentNotification",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/webhooks/telegram": {
+      "post": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Receive Telegram Gateway delivery reports.",
+        "description": "Validated by HMAC signature; updates the matching session's delivery state.",
+        "operationId": "TelegramDeliveryReport",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/config": {
+      "get": {
+        "tags": [
+          "Config"
+        ],
+        "summary": "Signed-in reference bundle (statuses, account statuses, roles, …).",
+        "operationId": "GetConfig",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/meta": {
+      "get": {
+        "tags": [
+          "Meta"
+        ],
+        "summary": "Public reference labels (methods, currencies, languages) + docs links.",
+        "operationId": "GetMeta",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetaResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/gateway/register": {
+      "post": {
+        "tags": [
+          "Api"
+        ],
+        "summary": "Register a gateway device and the SIM numbers it hosts.",
+        "operationId": "RegisterGatewayDevice",
+        "requestBody": {
+          "x-name": "RegisterDeviceRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDeviceRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterDeviceResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "GatewayBearer": []
+          }
+        ]
+      }
+    },
+    "/api/gateway/calls": {
+      "post": {
+        "tags": [
+          "Api"
+        ],
+        "summary": "Report a received (and rejected) verification call.",
+        "operationId": "ReportGatewayCall",
+        "parameters": [
+          {
+            "name": "x-event-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "x-name": "ReportCallRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportCallRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportCallResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "GatewayBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/verify/check": {
+      "post": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Submit a code (contract parity; not used by v1 auto-verify).",
+        "description": "Not used by the v1 reverse-flash-call flow; retained for compatibility and the future\ncaller-ID-OTP method.",
+        "operationId": "CheckVerificationCode",
+        "requestBody": {
+          "x-name": "CheckCodeRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckCodeRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckCodeResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "ExternalBasic": []
+          }
+        ]
+      }
+    },
+    "/v1/balance": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Get the account's current balance.",
+        "operationId": "GetBalance",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBalanceResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "ExternalBasic": []
+          }
+        ]
+      }
+    },
+    "/v1/usage": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Aggregated verification usage over a date range.",
+        "operationId": "GetUsage",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Inclusive start date.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "nullable": true
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Inclusive end date.",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsageResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "ExternalBasic": []
+          }
+        ]
+      }
+    },
+    "/v1/verify/{request_id}": {
+      "get": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Fetch the current status of a verification.",
+        "operationId": "GetVerificationStatus",
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetVerificationStatusResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "ExternalBasic": []
+          }
+        ]
+      }
+    },
+    "/v1/verify": {
+      "post": {
+        "tags": [
+          "V1"
+        ],
+        "summary": "Initiate a reverse-flash-call verification.",
+        "description": "Returns the gateway number to display; the user calls it and we auto-verify.",
+        "operationId": "InitiateVerification",
+        "requestBody": {
+          "x-name": "InitiateVerificationRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiateVerificationRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReverseFlashCallInitiateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "ExternalBasic": []
+          }
+        ]
+      }
+    },
+    "/dashboard/topups": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Request a balance top-up (card/SBP).",
+        "operationId": "CreateTopup",
+        "requestBody": {
+          "x-name": "CreateTopupRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTopupRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopupResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "List the signed-in account's balance top-ups (filter/sort/paginate).",
+        "operationId": "GetDashboardTopups",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfTopupResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/account": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Get the signed-in account's profile, status and balance.",
+        "operationId": "GetDashboardAccount",
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/credentials": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Get the account's API key and secret.",
+        "operationId": "GetDashboardCredentials",
+        "responses": {
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/usage": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Aggregated verification usage for the signed-in account.",
+        "operationId": "GetDashboardUsage",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "nullable": true
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsageResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/verifications": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "List the signed-in account's verifications (filter/sort/paginate).",
+        "operationId": "ListDashboardVerifications",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "RSQL filter expression over allowlisted fields. Optional.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Comma-separated sort fields; prefix - for descending. Optional.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "1-based page number. Defaults to 1.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfVerificationListItemResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get the current user's identity and settings (incl. locale).",
+        "operationId": "GetMe",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/topups/{id}": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Get one of the signed-in account's top-ups (poll its status).",
+        "operationId": "GetDashboardTopup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopupResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/transactions": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "List the signed-in account's balance transactions (filter/sort/paginate).",
+        "operationId": "GetDashboardTransactions",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfLedgerEntryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/credentials/rotate-key": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Rotate the API key (independent of the secret).",
+        "operationId": "RotateApiKey",
+        "responses": {
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RotateKeyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/credentials/rotate-secret": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Rotate the API secret (the old secret stops working immediately).",
+        "operationId": "RotateApiSecret",
+        "responses": {
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RotateSecretResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/dashboard/locale": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Set the preferred response language (en/ru).",
+        "operationId": "SetLocale",
+        "requestBody": {
+          "x-name": "SetLocaleRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetLocaleRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/auth/password/change": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Change the password (knowing the current one).",
+        "operationId": "ChangePassword",
+        "requestBody": {
+          "x-name": "ChangePasswordRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/auth/password/forgot": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Request a password-reset code by email.",
+        "operationId": "ForgotPassword",
+        "requestBody": {
+          "x-name": "ForgotPasswordRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign in and obtain an access token (+ refresh cookie).",
+        "operationId": "Login",
+        "requestBody": {
+          "x-name": "LoginRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Log out (revokes all of the user's sessions).",
+        "operationId": "Logout",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Exchange a refresh token for a fresh token pair.",
+        "operationId": "Refresh",
+        "requestBody": {
+          "x-name": "RefreshRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register a new integrator account (pending admin review).",
+        "operationId": "Register",
+        "requestBody": {
+          "x-name": "RegisterRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/resend-code": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Re-send the email-verification code (409 if already verified).",
+        "operationId": "ResendVerificationCode",
+        "responses": {
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/auth/password/reset": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset the password with the emailed code.",
+        "operationId": "ResetPassword",
+        "requestBody": {
+          "x-name": "ResetPasswordRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/auth/verify-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Verify the account email with the emailed code.",
+        "operationId": "VerifyEmail",
+        "requestBody": {
+          "x-name": "VerifyEmailRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/admin/accounts/{id}/credit": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Credit an account's balance (manual adjustment).",
+        "operationId": "CreditAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Account id, bound from the route.",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            }
+          }
+        ],
+        "requestBody": {
+          "x-name": "CreditAccountRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreditAccountRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/admin/prices/{id}/deactivate": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Retire a price (admin); blocked if it's the last active one.",
+        "operationId": "DeactivatePrice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/admin/accounts/{id}/ledger": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List an account's balance-ledger entries (filter/sort/paginate).",
+        "operationId": "GetAccountLedger",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfLedgerEntryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/accounts/{id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get a single account's full profile (admin).",
+        "operationId": "GetAdminAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/stats/daily": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Daily platform analytics (verifications, cost, new clients) + current counts.",
+        "operationId": "GetAdminStats",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "nullable": true
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminStatsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/gateways": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Gateway devices + SIM pool health (admin).",
+        "operationId": "GetGateways",
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGatewaysResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/providers/telegram": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Telegram Gateway supplier balance (admin).",
+        "operationId": "GetTelegramProvider",
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelegramProviderResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/users/{id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get a single user's profile (admin).",
+        "operationId": "GetUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/accounts": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List accounts (admin) with filter/sort/paginate.",
+        "operationId": "ListAccounts",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfAccountListItemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/prices": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List price-book entries.",
+        "operationId": "ListPrices",
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PriceItemResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Set a unit price for a verification method + currency.",
+        "operationId": "SetPrice",
+        "requestBody": {
+          "x-name": "SetPriceRequest",
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPriceRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceItemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List users (admin) with filter/sort/paginate.",
+        "operationId": "ListUsers",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfUserListItemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/verifications": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List verifications across all accounts (filter/sort/paginate).",
+        "operationId": "ListVerifications",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfVerificationListItemResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/topups/{id}/refresh": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Re-poll the acquirer for a top-up and apply the result (admin).",
+        "operationId": "RefreshTopup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopupResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/topups/{id}/refund": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Refund a paid top-up through the acquirer (admin).",
+        "operationId": "RefundTopup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopupResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/accounts/{id}/reinstate": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Reinstate a suspended account.",
+        "operationId": "ReinstateAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/admin/accounts/{id}/suspend": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Suspend an active account.",
+        "operationId": "SuspendAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProblemDetails": {
+        "type": "object",
+        "additionalProperties": {
+          "nullable": true
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ConfigResponse": {
+        "type": "object",
+        "description": "Response for GET /config — the full reference bundle for a signed-in frontend (adds the\nlifecycle/role enums the dashboard needs to render tables and filters). Localized per the user's\nresolved language.",
+        "additionalProperties": false,
+        "properties": {
+          "methods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "account_statuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "currencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "topup_methods": {
+            "type": "array",
+            "description": "Balance top-up methods the configured terminal supports (for the payment picker).",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          }
+        }
+      },
+      "LabelItem": {
+        "type": "object",
+        "description": "A selectable value with its localized display label.",
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The snake_case wire value (e.g. reverse_flash_call)."
+          },
+          "label": {
+            "type": "string",
+            "description": "Display label in the resolved language."
+          }
+        }
+      },
+      "MetaResponse": {
+        "type": "object",
+        "description": "Response for GET /meta — public reference data needed before sign-in (e.g. registration\nforms). Labels are localized via Accept-Language (spec §1.6).",
+        "additionalProperties": false,
+        "properties": {
+          "methods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "currencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LabelItem"
+            }
+          },
+          "docs": {
+            "description": "Where the docs live; the frontend fetches the link map from LinksUrl.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DocsLinks"
+              }
+            ]
+          }
+        }
+      },
+      "DocsLinks": {
+        "type": "object",
+        "description": "Pointers to the documentation site (spec §1.6).",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "links_url": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterDeviceResponse": {
+        "type": "object",
+        "description": "Response for device registration.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the registration was accepted."
+          },
+          "device_registered": {
+            "type": "boolean",
+            "description": "Whether the device is now registered."
+          }
+        }
+      },
+      "RegisterDeviceRequest": {
+        "type": "object",
+        "description": "Body for POST /api/gateway/register.",
+        "additionalProperties": false,
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "description": "Stable per-device UUID."
+          },
+          "gateway_name": {
+            "type": "string",
+            "description": "Operator label, e.g. gateway-moscow-01."
+          },
+          "app_version": {
+            "type": "string",
+            "description": "Reported app version, if any.",
+            "nullable": true
+          },
+          "android_version": {
+            "type": "integer",
+            "description": "Reported Android API level, if any.",
+            "format": "int32",
+            "nullable": true
+          },
+          "sims": {
+            "type": "array",
+            "description": "SIMs hosted by the device.",
+            "items": {
+              "$ref": "#/components/schemas/RegisterSimRequest"
+            }
+          }
+        }
+      },
+      "RegisterSimRequest": {
+        "type": "object",
+        "description": "A SIM entry in a registration request.",
+        "additionalProperties": false,
+        "properties": {
+          "sim_slot": {
+            "type": "integer",
+            "description": "Physical SIM slot, if known.",
+            "format": "int32",
+            "nullable": true
+          },
+          "subscription_id": {
+            "type": "integer",
+            "description": "Telephony subscription id, if known.",
+            "format": "int32",
+            "nullable": true
+          },
+          "carrier": {
+            "type": "string",
+            "description": "Carrier label, e.g. MTS.",
+            "nullable": true
+          },
+          "number": {
+            "type": "string",
+            "description": "The SIM's MSISDN."
+          }
+        }
+      },
+      "ReportCallResponse": {
+        "type": "object",
+        "description": "Response for a reported call.",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the report was accepted."
+          },
+          "verification_found": {
+            "type": "boolean",
+            "description": "Whether the report matched a pending session."
+          },
+          "request_id": {
+            "type": "string",
+            "description": "The matched session's id, if any.",
+            "format": "guid",
+            "nullable": true
+          }
+        }
+      },
+      "ReportCallRequest": {
+        "type": "object",
+        "description": "Body for POST /api/gateway/calls.",
+        "additionalProperties": false,
+        "properties": {
+          "caller_number": {
+            "type": "string",
+            "description": "End user who placed the call."
+          },
+          "receiver_number": {
+            "type": "string",
+            "description": "The gateway SIM number that was dialed — the matching key.",
+            "nullable": true
+          },
+          "sim_slot": {
+            "type": "integer",
+            "description": "Physical SIM slot, if known.",
+            "format": "int32",
+            "nullable": true
+          },
+          "subscription_id": {
+            "type": "integer",
+            "description": "Telephony subscription id, if known.",
+            "format": "int32",
+            "nullable": true
+          },
+          "device_id": {
+            "type": "string",
+            "description": "Reporting device's stable id."
+          },
+          "gateway_name": {
+            "type": "string",
+            "description": "Reporting device's operator label."
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "Call time, epoch seconds.",
+            "format": "int64"
+          }
+        }
+      },
+      "CheckCodeResponse": {
+        "type": "object",
+        "description": "Success response for a code check.",
+        "additionalProperties": false,
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "The session's id.",
+            "format": "guid"
+          },
+          "status": {
+            "description": "Resulting status.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VerificationStatus"
+              }
+            ]
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "The verified number, normalised to E.164."
+          }
+        }
+      },
+      "VerificationStatus": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "sent",
+          "delivered",
+          "verified",
+          "expired",
+          "failed"
+        ],
+        "enum": [
+          "sent",
+          "delivered",
+          "verified",
+          "expired",
+          "failed"
+        ]
+      },
+      "CheckCodeRequest": {
+        "type": "object",
+        "description": "Body for POST /v1/verify/check.",
+        "additionalProperties": false,
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "The session id to check against.",
+            "format": "guid"
+          },
+          "code": {
+            "type": "string",
+            "description": "The code submitted by the integrator."
+          }
+        }
+      },
+      "GetBalanceResponse": {
+        "type": "object",
+        "description": "Response for GET /v1/balance.",
+        "additionalProperties": false,
+        "properties": {
+          "balance": {
+            "description": "The account's current prepaid balance.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MoneyResponse"
+              }
+            ]
+          }
+        }
+      },
+      "MoneyResponse": {
+        "type": "object",
+        "description": "Monetary amount in API responses.",
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "The amount.",
+            "format": "decimal"
+          },
+          "currency": {
+            "description": "ISO-4217 currency.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Currency"
+              }
+            ]
+          }
+        }
+      },
+      "Currency": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "RUB"
+        ],
+        "enum": [
+          "RUB"
+        ]
+      },
+      "GetUsageResponse": {
+        "type": "object",
+        "description": "Usage summary response.",
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Start of the reported range.",
+            "format": "date"
+          },
+          "to": {
+            "type": "string",
+            "description": "End of the reported range.",
+            "format": "date"
+          },
+          "total_verifications": {
+            "type": "integer",
+            "description": "Total verifications initiated in range.",
+            "format": "int32"
+          },
+          "successful": {
+            "type": "integer",
+            "description": "Count that reached verified.",
+            "format": "int32"
+          },
+          "success_rate": {
+            "type": "number",
+            "description": "Successful divided by total, rounded to 4 places.",
+            "format": "double"
+          },
+          "total_cost": {
+            "description": "Total amount charged across the range.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MoneyResponse"
+              }
+            ]
+          },
+          "by_method": {
+            "type": "object",
+            "description": "Verification counts grouped by method.",
+            "x-dictionaryKey": {
+              "$ref": "#/components/schemas/VerificationMethod"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "by_status": {
+            "type": "object",
+            "description": "Verification counts grouped by status — the failure breakdown (expired vs\nfailed) integrators use to diagnose drop-off.",
+            "x-dictionaryKey": {
+              "$ref": "#/components/schemas/VerificationStatus"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "daily": {
+            "type": "array",
+            "description": "Per-day counts across the range, ordered by date — for trend charts. Days with no activity\nare omitted.",
+            "items": {
+              "$ref": "#/components/schemas/UsageDayResponse"
+            }
+          }
+        }
+      },
+      "VerificationMethod": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "reverse_flash_call",
+          "flash_call",
+          "voice",
+          "sms",
+          "telegram"
+        ],
+        "enum": [
+          "reverse_flash_call",
+          "flash_call",
+          "voice",
+          "sms",
+          "telegram"
+        ]
+      },
+      "UsageDayResponse": {
+        "type": "object",
+        "description": "One day's counts in a usage report.",
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "verified": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GetUsageRequest": {
+        "type": "object",
+        "description": "Query for GET /v1/usage.",
+        "additionalProperties": false
+      },
+      "GetVerificationStatusResponse": {
+        "type": "object",
+        "description": "Status response.",
+        "additionalProperties": false,
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "The session's id.",
+            "format": "guid"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "The verified number, normalised to E.164."
+          },
+          "method": {
+            "description": "Verification method.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VerificationMethod"
+              }
+            ]
+          },
+          "status": {
+            "description": "Current status.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VerificationStatus"
+              }
+            ]
+          },
+          "cost": {
+            "description": "Amount charged for this verification.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MoneyResponse"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "description": "When the session was created (UTC).",
+            "format": "date-time"
+          },
+          "verified_at": {
+            "type": "string",
+            "description": "When verification succeeded (UTC), if it did.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "expires_at": {
+            "type": "string",
+            "description": "When the session expires (UTC).",
+            "format": "date-time"
+          }
+        }
+      },
+      "GetVerificationStatusRequest": {
+        "type": "object",
+        "description": "Route binding for GET /v1/verify/{request_id}.",
+        "additionalProperties": false
+      },
+      "ReverseFlashCallInitiateResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InitiateVerificationResponse"
+          },
+          {
+            "type": "object",
+            "description": "Response for a ReverseFlashCall verification.",
+            "additionalProperties": false,
+            "properties": {
+              "number_to_call": {
+                "type": "string",
+                "description": "Gateway SIM number to display: \"Call this number\"."
+              },
+              "code_length": {
+                "type": "integer",
+                "description": "Code length.",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "InitiateVerificationResponse": {
+        "type": "object",
+        "discriminator": {
+          "propertyName": "method",
+          "mapping": {
+            "telegram": "#/components/schemas/TelegramInitiateResponse",
+            "reverse_flash_call": "#/components/schemas/ReverseFlashCallInitiateResponse"
+          }
+        },
+        "description": "Response for POST /v1/verify, common fields shared by every method.",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "required": [
+          "method"
+        ],
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "description": "The created session's id.",
+            "format": "guid"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "The verified number, normalised to E.164."
+          },
+          "status": {
+            "description": "Current status.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VerificationStatus"
+              }
+            ]
+          },
+          "cost": {
+            "description": "Amount charged for this verification.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MoneyResponse"
+              }
+            ]
+          },
+          "expires_at": {
+            "type": "string",
+            "description": "When the session expires (UTC) if not verified.",
+            "format": "date-time"
+          },
+          "method": {
+            "type": "string"
+          }
+        }
+      },
+      "TelegramInitiateResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InitiateVerificationResponse"
+          },
+          {
+            "type": "object",
+            "description": "Response for a Telegram verification.",
+            "additionalProperties": false,
+            "properties": {
+              "code_length": {
+                "type": "integer",
+                "description": "Number of digits in the code the user will receive and must enter.",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "InitiateVerificationRequest": {
+        "type": "object",
+        "description": "Body for POST /v1/verify.",
+        "additionalProperties": false,
+        "properties": {
+          "phone_number": {
+            "type": "string",
+            "description": "End-user number in E.164."
+          },
+          "method": {
+            "description": "Verification method.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VerificationMethod"
+              }
+            ]
+          },
+          "expiry_seconds": {
+            "type": "integer",
+            "description": "Requested session TTL in seconds.",
+            "format": "int32",
+            "nullable": true
+          }
+        }
+      },
+      "TopupResponse": {
+        "type": "object",
+        "description": "A balance top-up (spec §11; payments-tbank-design). Returned by create, list and detail. Nullable\nfields fill in as it progresses: payment_url while pending, settled_amount/paid_at\non success.",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TopupStatus"
+          },
+          "method": {
+            "$ref": "#/components/schemas/TopupMethod"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/MoneyResponse"
+          },
+          "settled_amount": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MoneyResponse"
+              }
+            ]
+          },
+          "customer_email": {
+            "type": "string",
+            "description": "Customer email captured at payment time (used for refunds).",
+            "nullable": true
+          },
+          "payment_url": {
+            "type": "string",
+            "description": "Where to send the payer: redirect (card) or open / QR-encode (SBP). Null once terminal.",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TopupStatus": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "pending",
+          "paid",
+          "failed",
+          "expired",
+          "refunded"
+        ],
+        "enum": [
+          "pending",
+          "paid",
+          "failed",
+          "expired",
+          "refunded"
+        ]
+      },
+      "TopupMethod": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "card",
+          "sbp",
+          "tpay",
+          "sberpay",
+          "alfapay"
+        ],
+        "enum": [
+          "card",
+          "sbp",
+          "tpay",
+          "sberpay",
+          "alfapay"
+        ]
+      },
+      "CreateTopupRequest": {
+        "type": "object",
+        "description": "Body for POST /dashboard/topups — request a balance top-up (spec §11; payments-tbank-design).\nCurrency is the account's, not supplied here.",
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount to top up, in the account's currency.",
+            "format": "decimal"
+          },
+          "method": {
+            "description": "Payment method (must be one the terminal supports, see /config).",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TopupMethod"
+              }
+            ]
+          },
+          "email": {
+            "type": "string",
+            "description": "Required. Email the payment receipt is sent to (the SPA defaults it to the user's email)."
+          }
+        }
+      },
+      "AccountResponse": {
+        "type": "object",
+        "description": "Response for GET /dashboard/account (spec §9.1).",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/AccountStatus"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/MoneyResponse"
+          }
+        }
+      },
+      "AccountStatus": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "active",
+          "suspended"
+        ],
+        "enum": [
+          "active",
+          "suspended"
+        ]
+      },
+      "CredentialsResponse": {
+        "type": "object",
+        "description": "Response for GET /dashboard/credentials (spec §9.2).",
+        "additionalProperties": false,
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "api_secret": {
+            "type": "string"
+          }
+        }
+      },
+      "PagedResponseOfVerificationListItemResponse": {
+        "type": "object",
+        "description": "A page of results plus its pagination metadata.",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VerificationListItemResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationResponse"
+          }
+        }
+      },
+      "VerificationListItemResponse": {
+        "type": "object",
+        "description": "A verification session row in a list response. Carries only the masked number — the raw\nnumber is never stored or returned (spec §7).",
+        "additionalProperties": false,
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "phone_number": {
+            "type": "string"
+          },
+          "method": {
+            "$ref": "#/components/schemas/VerificationMethod"
+          },
+          "status": {
+            "$ref": "#/components/schemas/VerificationStatus"
+          },
+          "cost": {
+            "$ref": "#/components/schemas/MoneyResponse"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "verified_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PaginationResponse": {
+        "type": "object",
+        "description": "Pagination metadata for a PagedResponse`1.",
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page_size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total_items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "total_pages": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "has_previous": {
+            "type": "boolean"
+          },
+          "has_next": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RsqlListRequest": {
+        "type": "object",
+        "description": "Query parameters for an RSQL list endpoint: filtering, sorting and pagination.",
+        "additionalProperties": false
+      },
+      "MeResponse": {
+        "type": "object",
+        "description": "Response for GET /me — the signed-in user's identity + settings (spec §9).",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "email": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "email_verified": {
+            "type": "boolean"
+          },
+          "locale": {
+            "description": "Preferred response language (en/ru).",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Locale"
+              }
+            ]
+          },
+          "account": {
+            "description": "The owned account summary, if any.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AccountSummaryResponse"
+              }
+            ]
+          }
+        }
+      },
+      "UserRole": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "integrator",
+          "admin"
+        ],
+        "enum": [
+          "integrator",
+          "admin"
+        ]
+      },
+      "Locale": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "en",
+          "ru"
+        ],
+        "enum": [
+          "en",
+          "ru"
+        ]
+      },
+      "AccountSummaryResponse": {
+        "type": "object",
+        "description": "Minimal account view returned with auth tokens.",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/AccountStatus"
+          },
+          "currency": {
+            "description": "Emitted as the verbatim ISO-4217 code (e.g. RUB).",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Currency"
+              }
+            ]
+          }
+        }
+      },
+      "PagedResponseOfTopupResponse": {
+        "type": "object",
+        "description": "A page of results plus its pagination metadata.",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TopupResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationResponse"
+          }
+        }
+      },
+      "PagedResponseOfLedgerEntryResponse": {
+        "type": "object",
+        "description": "A page of results plus its pagination metadata.",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LedgerEntryResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationResponse"
+          }
+        }
+      },
+      "LedgerEntryResponse": {
+        "type": "object",
+        "description": "A balance-ledger row (GET /admin/accounts/{id}/ledger, spec §11.1).",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Signed: positive credits, negative debits.",
+            "format": "decimal"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/LedgerReason"
+          },
+          "reference_id": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LedgerReason": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "verification",
+          "topup",
+          "adjustment",
+          "refund"
+        ],
+        "enum": [
+          "verification",
+          "topup",
+          "adjustment",
+          "refund"
+        ]
+      },
+      "RotateKeyResponse": {
+        "type": "object",
+        "description": "Response for POST /dashboard/credentials/rotate-key (spec §9.4).",
+        "additionalProperties": false,
+        "properties": {
+          "api_key": {
+            "type": "string"
+          }
+        }
+      },
+      "RotateSecretResponse": {
+        "type": "object",
+        "description": "Response for POST /dashboard/credentials/rotate-secret (spec §9.3).",
+        "additionalProperties": false,
+        "properties": {
+          "api_secret": {
+            "type": "string"
+          }
+        }
+      },
+      "SetLocaleRequest": {
+        "type": "object",
+        "description": "Body for POST /dashboard/locale — set the user's preferred response language (spec §1.6).",
+        "additionalProperties": false,
+        "properties": {
+          "locale": {
+            "description": "Preferred response language (en/ru).",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Locale"
+              }
+            ]
+          }
+        }
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "description": "Body for POST /auth/password/change — change password knowing the current one.",
+        "additionalProperties": false,
+        "properties": {
+          "current_password": {
+            "type": "string"
+          },
+          "new_password": {
+            "type": "string"
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "description": "Body for POST /auth/password/forgot — request a reset code.",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "description": "Token response for register/login/refresh (spec §7). Both tokens are returned in the body;\nthe client stores and sends them (JWT-only — no cookies).",
+        "additionalProperties": false,
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "token_type": {
+            "type": "string"
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "Access-token lifetime in seconds.",
+            "format": "int32"
+          },
+          "account": {
+            "description": "Owner's account summary, if any.",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AccountSummaryResponse"
+              }
+            ]
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "description": "Body for POST /auth/login (spec §7.2).",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "RefreshRequest": {
+        "type": "object",
+        "description": "Body for POST /auth/refresh and POST /auth/logout (spec §7.3–7.4).",
+        "additionalProperties": false,
+        "properties": {
+          "refresh_token": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "description": "Body for POST /auth/register (spec §7.1).",
+        "additionalProperties": false,
+        "properties": {
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string",
+            "description": "The integrator's website URL."
+          },
+          "preferred_currency": {
+            "type": "string",
+            "description": "ISO-4217 code; v1 accepts only RUB."
+          },
+          "locale": {
+            "description": "Preferred response language (en/ru); defaults to en.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Locale"
+              }
+            ]
+          }
+        }
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "description": "Body for POST /auth/password/reset — set a new password with the emailed code.",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "new_password": {
+            "type": "string"
+          }
+        }
+      },
+      "VerifyEmailRequest": {
+        "type": "object",
+        "description": "Body for POST /auth/verify-email (spec §7.5).",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "CreditAccountRequest": {
+        "type": "object",
+        "description": "Body + route for POST /admin/accounts/{id}/credit (manual balance credit).",
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Positive amount to credit, in the account's currency.",
+            "format": "decimal"
+          }
+        }
+      },
+      "AccountDetailResponse": {
+        "type": "object",
+        "description": "Full account profile for the admin client drill-down (GET /admin/accounts/{id}). The api\nsecret is never returned; api_key is shown for admin support.",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AccountStatus"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/MoneyResponse"
+          },
+          "api_key": {
+            "type": "string",
+            "nullable": true
+          },
+          "webhook_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AdminStatsResponse": {
+        "type": "object",
+        "description": "Daily platform analytics. The frontend derives the headline numbers (today / month / rates) from\ndays; current carries the point-in-time counts that aren't daily-derivable.",
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date"
+          },
+          "to": {
+            "type": "string",
+            "format": "date"
+          },
+          "currency": {
+            "description": "Currency of the per-day cost (verbatim ISO-4217, e.g. RUB).",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Currency"
+              }
+            ]
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminStatsDay"
+            }
+          },
+          "current": {
+            "$ref": "#/components/schemas/AdminStatsCurrent"
+          }
+        }
+      },
+      "AdminStatsDay": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "verified": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "expired": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cost": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "new_clients": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "by_method": {
+            "type": "object",
+            "x-dictionaryKey": {
+              "$ref": "#/components/schemas/VerificationMethod"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "AdminStatsCurrent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "active_clients": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total_clients": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "AdminStatsRequest": {
+        "type": "object",
+        "description": "Query for GET /admin/stats/daily — a date range (defaults to the last 30 days).",
+        "additionalProperties": false
+      },
+      "AdminGatewaysResponse": {
+        "type": "object",
+        "description": "Gateway fleet + SIM-pool health (admin, spec Appendix A / admin-api-design §5).",
+        "additionalProperties": false,
+        "properties": {
+          "devices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GatewayDeviceResponse"
+            }
+          }
+        }
+      },
+      "GatewayDeviceResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "device_id": {
+            "type": "string"
+          },
+          "gateway_name": {
+            "type": "string"
+          },
+          "app_version": {
+            "type": "string",
+            "nullable": true
+          },
+          "android_version": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "registered_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_seen_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sims": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GatewaySimResponse"
+            }
+          }
+        }
+      },
+      "GatewaySimResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sim_slot": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "carrier": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "number_masked": {
+            "type": "string",
+            "description": "Masked SIM number for display (decrypted then masked), or null if undecryptable.",
+            "nullable": true
+          },
+          "live_load": {
+            "type": "integer",
+            "description": "Verifications currently awaiting a call on this SIM (live load).",
+            "format": "int32"
+          }
+        }
+      },
+      "TelegramProviderResponse": {
+        "type": "object",
+        "description": "Telegram Gateway supplier-balance snapshot (admin, spec §1.7).",
+        "additionalProperties": false,
+        "properties": {
+          "balance_usd": {
+            "type": "number",
+            "description": "Last reported Gateway balance in USD, or null if we've never sent.",
+            "format": "decimal",
+            "nullable": true
+          },
+          "as_of": {
+            "type": "string",
+            "description": "When that balance was observed (the send that reported it).",
+            "format": "date-time",
+            "nullable": true
+          },
+          "low_balance": {
+            "type": "boolean",
+            "description": "True when the balance is below the configured threshold."
+          },
+          "min_balance_usd": {
+            "type": "number",
+            "description": "The configured low-balance threshold (USD), if any.",
+            "format": "decimal",
+            "nullable": true
+          }
+        }
+      },
+      "UserDetailResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/UserListItemResponse"
+          },
+          {
+            "type": "object",
+            "description": "Full user profile for the admin drill-down (GET /admin/users/{id}).",
+            "additionalProperties": false,
+            "properties": {
+              "account": {
+                "description": "The owned account, if any.",
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/UserAccountSummary"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "UserAccountSummary": {
+        "type": "object",
+        "description": "Minimal owned-account view inside a user detail.",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AccountStatus"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/MoneyResponse"
+          }
+        }
+      },
+      "UserListItemResponse": {
+        "type": "object",
+        "description": "A user row in the admin user list (GET /admin/users, spec §10).",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "email": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "email_verified": {
+            "type": "boolean"
+          },
+          "account_id": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PagedResponseOfAccountListItemResponse": {
+        "type": "object",
+        "description": "A page of results plus its pagination metadata.",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountListItemResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationResponse"
+          }
+        }
+      },
+      "AccountListItemResponse": {
+        "type": "object",
+        "description": "A registration row in the admin listing (GET /admin/accounts, spec §10).",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AccountStatus"
+          },
+          "balance": {
+            "$ref": "#/components/schemas/MoneyResponse"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PriceItemResponse": {
+        "type": "object",
+        "description": "A price-book row in admin listings.",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "method": {
+            "$ref": "#/components/schemas/VerificationMethod"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "effective_from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PagedResponseOfUserListItemResponse": {
+        "type": "object",
+        "description": "A page of results plus its pagination metadata.",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserListItemResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationResponse"
+          }
+        }
+      },
+      "SetPriceRequest": {
+        "type": "object",
+        "description": "Body for POST /admin/prices (spec §11.0). Method/currency accepted as wire codes\n(e.g. reverse_flash_call, RUB), parsed case-insensitively.",
+        "additionalProperties": false,
+        "properties": {
+          "method": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "effective_from": {
+            "type": "string",
+            "description": "When the price takes effect; defaults to now.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWTBearerAuth": {
+        "type": "http",
+        "description": "Enter a JWT token to authorize the requests...",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      },
+      "ExternalBasic": {
+        "type": "http",
+        "description": "External API: HTTP Basic api_key:api_secret.",
+        "scheme": "basic"
+      },
+      "GatewayBearer": {
+        "type": "http",
+        "description": "Gateway API: Bearer api_key.",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
