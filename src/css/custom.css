@@ -299,6 +299,124 @@ div[class*='codeBlockContainer_'] code {
   content: none;
 }
 
+/* ===== OpenAPI API reference — brand + de-noise (T-Bank-like) ===== */
+/* map the theme's tokens onto the cream/ink/lime palette */
+:root {
+  --openapi-card-background-color: var(--vh-surface);
+  --openapi-explorer-border-color: var(--vh-card-border);
+  --openapi-tree-line-color: var(--vh-hairline);
+  --openapi-code-tab-border-color: var(--vh-card-border);
+}
+
+/* clean two columns — drop the hard vertical divider */
+.openapi-left-panel__container {
+  border-right: none;
+}
+
+/* section headings ("Описание", "Запрос", "Ответ"…) get a short lime accent */
+.openapi-left-panel__container h2 {
+  position: relative;
+  padding-bottom: 0.55rem;
+  margin-bottom: 1.1rem;
+}
+.openapi-left-panel__container h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 38px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--vh-lime-deep);
+}
+
+/* endpoint block → full-width rounded brand card */
+.openapi__method-endpoint {
+  width: 100%;
+  gap: 0.55rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--vh-card-border);
+  border-radius: 14px;
+  background: var(--vh-surface);
+}
+.openapi__method-endpoint-path {
+  font-size: 13px;
+  color: var(--vh-ink);
+}
+
+/* language selector → plain text tabs (no 80px logo boxes, no devicon
+   network images, no heavy shadow) */
+.openapi-tabs__code-container:not(.openapi-tabs__code-container-inner),
+.openapi-tabs__code-container:not(.openapi-tabs__code-container-inner):hover {
+  background: var(--vh-surface);
+  border: 1px solid var(--vh-card-border);
+  border-radius: 14px;
+  box-shadow: none;
+}
+.openapi-tabs__code-list-container {
+  flex-wrap: wrap;
+  gap: 0.1rem;
+  padding: 0.3rem 0.45rem 0;
+  border-bottom: 1px solid var(--vh-hairline);
+}
+.openapi-tabs__code-item {
+  flex: 0 0 auto !important;
+  flex-direction: row !important;
+  align-items: center;
+  padding: 0.4rem 0.7rem !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  color: var(--vh-text-subtle) !important;
+}
+.openapi-tabs__code-item::after {
+  display: none !important; /* removes the externally-loaded devicon logos */
+}
+.openapi-tabs__code-item > span {
+  padding: 0 !important;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 12.5px !important;
+  text-transform: none !important;
+  color: inherit;
+}
+.openapi-tabs__code-item:not(.active):hover {
+  border: 0 !important;
+  border-bottom: 2px solid var(--vh-hairline) !important;
+  color: var(--vh-ink) !important;
+  background: transparent !important;
+}
+.openapi-tabs__code-item.active {
+  box-shadow: none !important;
+  border: 0 !important;
+  border-bottom: 2px solid var(--vh-lime-deep) !important;
+  color: var(--vh-ink) !important;
+}
+.openapi-tabs__code-item.active > span {
+  font-weight: 600;
+}
+
+/* code panel — let more of the sample show (theme caps it at 200px) */
+.openapi-explorer__code-block code {
+  max-height: 440px;
+}
+
+/* tone down the boxed sections (auth, request explorer) to brand hairlines */
+.openapi-security__details,
+.openapi-explorer__details-container,
+.openapi-explorer__details-outer-container {
+  border-color: var(--vh-card-border) !important;
+  border-radius: 12px;
+}
+
+/* schema / param rows */
+.openapi-schema__name {
+  color: var(--vh-ink);
+}
+.openapi-schema__required {
+  color: #c0362c;
+}
+
 /* ---- sticky-footer layout ---- */
 html,
 body,
