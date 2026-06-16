@@ -1,6 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 const docsearchAppId = process.env.DOCSEARCH_APP_ID;
@@ -76,6 +77,8 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          // required so the OpenAPI theme can render generated API pages
+          docItemComponent: '@theme/ApiItem',
         },
         blog: false,
         theme: {
@@ -85,8 +88,44 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'openapi',
+        docsPluginId: 'classic',
+        config: {
+          v1: {
+            // normalized.json is produced by `npm run prepare-api` from the
+            // pristine openapi/verificahub-api-v1.json (sets the prod server).
+            specPath: 'openapi/normalized.json',
+            outputDir: 'docs/reference',
+            downloadUrl:
+              'https://docs.verificahub.ru/openapi/verificahub-api-v1.json',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+            },
+            hideSendButton: true,
+          } satisfies OpenApiPlugin.Options,
+        },
+      },
+    ],
+  ],
+
+  themes: ['docusaurus-theme-openapi-docs'],
+
   themeConfig: {
     image: 'img/social-card.png',
+    // multi-language code samples shown in the API reference right rail
+    languageTabs: [
+      {highlight: 'bash', language: 'curl', logoClass: 'curl'},
+      {highlight: 'go', language: 'go', logoClass: 'go'},
+      {highlight: 'javascript', language: 'nodejs', logoClass: 'nodejs'},
+      {highlight: 'python', language: 'python', logoClass: 'python'},
+      {highlight: 'php', language: 'php', logoClass: 'php'},
+      {highlight: 'java', language: 'java', logoClass: 'java', variant: 'unirest'},
+    ],
     algolia: hasDocSearchConfig
       ? {
           appId: docsearchAppId!,
