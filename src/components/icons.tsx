@@ -107,6 +107,20 @@ export const SearchIcon = (p: IconProps) => (
   </Svg>
 )
 
+export const ArrowLeftIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M19 12H5" />
+    <path d="m12 19-7-7 7-7" />
+  </Svg>
+)
+
+export const ArrowRightIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5 12h14" />
+    <path d="m12 5 7 7-7 7" />
+  </Svg>
+)
+
 export const ArrowUpRightIcon = (p: IconProps) => (
   <Svg {...p}>
     <path d="M7 17 17 7" />
