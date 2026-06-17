@@ -356,8 +356,8 @@ div[class*='codeBlockContainer_'] code {
 }
 .openapi-tabs__code-list-container {
   flex-wrap: wrap;
-  gap: 0.1rem;
-  padding: 0.3rem 0.45rem 0;
+  gap: 0 1.4rem; /* clear horizontal spacing between text tabs */
+  padding: 0.35rem 0.9rem 0;
   border-bottom: 1px solid var(--vh-hairline);
 }
 .openapi-tabs__code-item,
@@ -365,7 +365,7 @@ div[class*='codeBlockContainer_'] code {
   flex: 0 0 auto !important;
   flex-direction: row !important;
   align-items: center;
-  padding: 0.4rem 0.75rem !important;
+  padding: 0.35rem 0 !important;
   margin: 0 !important;
   border: 0 !important;
   border-bottom: 2px solid transparent !important;
