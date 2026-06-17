@@ -93,7 +93,6 @@
 div[class*='codeBlockContainer_'] {
   border: 1px solid var(--vh-card-border);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(22, 19, 14, 0.06);
 }
 .theme-code-block code,
 div[class*='codeBlockContainer_'] code {
@@ -356,24 +355,25 @@ div[class*='codeBlockContainer_'] code {
 }
 .openapi-tabs__code-list-container {
   flex-wrap: wrap;
-  gap: 0 1.4rem; /* clear horizontal spacing between text tabs */
-  padding: 0.35rem 0.9rem 0;
+  gap: 0.45rem; /* separate, distinct language pills */
+  padding: 0.6rem 0.6rem 0.7rem;
   border-bottom: 1px solid var(--vh-hairline);
 }
+/* each language = a separate pill button; no hover effects, no colour shifts */
 .openapi-tabs__code-item,
-.openapi-tabs__code-item:hover {
+.openapi-tabs__code-item:hover,
+.openapi-tabs__code-item:focus {
   flex: 0 0 auto !important;
   flex-direction: row !important;
   align-items: center;
-  padding: 0.35rem 0 !important;
+  padding: 0.34rem 0.85rem !important;
   margin: 0 !important;
-  border: 0 !important;
-  border-bottom: 2px solid transparent !important;
-  border-radius: 0 !important;
-  background: transparent !important;
+  border: 1px solid var(--vh-card-border) !important;
+  border-radius: 999px !important;
+  background: var(--vh-bg) !important;
   box-shadow: none !important;
   transition: none !important;
-  color: var(--vh-text-subtle) !important;
+  color: var(--vh-text-muted) !important;
 }
 .openapi-tabs__code-item::after {
   display: none !important; /* removes the externally-loaded devicon logos */
@@ -386,12 +386,44 @@ div[class*='codeBlockContainer_'] code {
   text-transform: none !important;
   color: inherit;
 }
-.openapi-tabs__code-item.active {
-  border-bottom: 2px solid var(--vh-lime-deep) !important;
-  color: var(--vh-ink) !important;
+.openapi-tabs__code-item.active,
+.openapi-tabs__code-item.active:hover {
+  background: var(--vh-ink) !important;
+  border-color: var(--vh-ink) !important;
+  color: var(--vh-bg) !important;
 }
 .openapi-tabs__code-item.active > span {
   font-weight: 600;
+}
+
+/* request/response sample sections in the right rail */
+.vh-api-sample {
+  margin-bottom: 1.5rem;
+}
+.vh-api-sample__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  font-family: var(--ifm-heading-font-family);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--vh-ink);
+}
+.vh-api-sample__status {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(46, 160, 67, 0.16);
+  color: #1a7f37;
+}
+/* flat code blocks (no shadow) — the dark fill carries the look */
+.vh-api-sample .theme-code-block,
+.vh-api-sample div[class*='codeBlockContainer_'] {
+  box-shadow: none !important;
+  border: 1px solid var(--vh-card-border);
 }
 
 /* readable language labels (theme hardcodes the raw id: curl/go/nodejs/…) */

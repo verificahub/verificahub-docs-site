@@ -166,8 +166,9 @@ const config: Config = {
     },
     // Footer is rendered by the swizzled src/theme/Footer (mirrors verificahub.ru).
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      // dark code blocks on the cream site → richer syntax highlighting
+      theme: prismThemes.oneDark,
+      darkTheme: prismThemes.oneDark,
     },
   } satisfies Preset.ThemeConfig,
 };

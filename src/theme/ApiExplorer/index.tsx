@@ -1,17 +1,31 @@
 import React from 'react';
 import {useDoc} from '@docusaurus/plugin-content-docs/client';
+import CodeBlock from '@theme/CodeBlock';
 import CodeSnippets from '@theme/ApiExplorer/CodeSnippets';
 import SecuritySchemes from '@theme/ApiExplorer/SecuritySchemes';
 import type {ApiItem} from 'docusaurus-plugin-openapi-docs/src/types';
 import * as sdk from 'postman-collection';
 
 /**
- * Swizzled (ejected) API explorer. The upstream theme also renders an
- * interactive "try-it" Request form (Base URL / Auth / Body) and a live
- * Response panel; we intentionally drop both for a cleaner, docs-first page —
- * the right rail is just the auth summary + the request code sample
- * (cURL/Go/Node/…). Response shapes/examples still live in the left column.
+ * Swizzled (ejected) API explorer. The upstream theme renders an interactive
+ * "try-it" Request form + live Response panel; we drop both for a cleaner,
+ * docs-first right rail: auth summary → request code samples ("Пример запроса")
+ * → response example ("Пример ответа"), à la the T-Bank dev portal.
  */
+function getResponseExample(
+  item: NonNullable<ApiItem>,
+): {code: string; body: string} | null {
+  const responses = (item as any).responses ?? {};
+  const code = Object.keys(responses).find((c) => /^2\d\d$/.test(c));
+  if (!code) return null;
+  const ex = responses[code]?.content?.['application/json']?.example;
+  if (ex === undefined) return null;
+  return {
+    code,
+    body: typeof ex === 'string' ? ex : JSON.stringify(ex, null, 2),
+  };
+}
+
 export default function ApiExplorer({
   item,
   infoPath,
@@ -38,10 +52,28 @@ export default function ApiExplorer({
     requestBody: item.requestBody,
   };
 
+  const responseExample = getResponseExample(item);
+
   return (
     <>
       <SecuritySchemes infoPath={infoPath} />
-      {item.method !== 'event' && <CodeSnippets {...codeSnippetProps} />}
+
+      {item.method !== 'event' && (
+        <section className="vh-api-sample">
+          <div className="vh-api-sample__title">Пример запроса</div>
+          <CodeSnippets {...codeSnippetProps} />
+        </section>
+      )}
+
+      {responseExample && (
+        <section className="vh-api-sample">
+          <div className="vh-api-sample__title">
+            Пример ответа
+            <span className="vh-api-sample__status">{responseExample.code}</span>
+          </div>
+          <CodeBlock language="json">{responseExample.body}</CodeBlock>
+        </section>
+      )}
     </>
   );
 }

@@ -11,3 +11,14 @@ declare module '@theme/ApiExplorer/SecuritySchemes' {
   const SecuritySchemes: import('react').ComponentType<{infoPath: string}>;
   export default SecuritySchemes;
 }
+
+declare module '@theme/CodeBlock' {
+  const CodeBlock: import('react').ComponentType<{
+    language?: string;
+    title?: string;
+    showLineNumbers?: boolean;
+    className?: string;
+    children: import('react').ReactNode;
+  }>;
+  export default CodeBlock;
+}
