@@ -345,13 +345,14 @@ div[class*='codeBlockContainer_'] code {
 }
 
 /* language selector → plain text tabs (no 80px logo boxes, no devicon
-   network images, no heavy shadow) */
+   network images, no shadows, no hover effects) */
 .openapi-tabs__code-container:not(.openapi-tabs__code-container-inner),
 .openapi-tabs__code-container:not(.openapi-tabs__code-container-inner):hover {
   background: var(--vh-surface);
   border: 1px solid var(--vh-card-border);
   border-radius: 14px;
-  box-shadow: none;
+  box-shadow: none !important;
+  transition: none !important;
 }
 .openapi-tabs__code-list-container {
   flex-wrap: wrap;
@@ -359,15 +360,19 @@ div[class*='codeBlockContainer_'] code {
   padding: 0.3rem 0.45rem 0;
   border-bottom: 1px solid var(--vh-hairline);
 }
-.openapi-tabs__code-item {
+.openapi-tabs__code-item,
+.openapi-tabs__code-item:hover {
   flex: 0 0 auto !important;
   flex-direction: row !important;
   align-items: center;
-  padding: 0.4rem 0.7rem !important;
+  padding: 0.4rem 0.75rem !important;
   margin: 0 !important;
   border: 0 !important;
   border-bottom: 2px solid transparent !important;
   border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: none !important;
   color: var(--vh-text-subtle) !important;
 }
 .openapi-tabs__code-item::after {
@@ -377,18 +382,11 @@ div[class*='codeBlockContainer_'] code {
   padding: 0 !important;
   font-family: var(--ifm-font-family-monospace);
   font-size: 12.5px !important;
+  font-weight: 500;
   text-transform: none !important;
   color: inherit;
 }
-.openapi-tabs__code-item:not(.active):hover {
-  border: 0 !important;
-  border-bottom: 2px solid var(--vh-hairline) !important;
-  color: var(--vh-ink) !important;
-  background: transparent !important;
-}
 .openapi-tabs__code-item.active {
-  box-shadow: none !important;
-  border: 0 !important;
   border-bottom: 2px solid var(--vh-lime-deep) !important;
   color: var(--vh-ink) !important;
 }
@@ -396,17 +394,59 @@ div[class*='codeBlockContainer_'] code {
   font-weight: 600;
 }
 
-/* code panel — let more of the sample show (theme caps it at 200px) */
-.openapi-explorer__code-block code {
-  max-height: 440px;
+/* readable language labels (theme hardcodes the raw id: curl/go/nodejs/…) */
+.openapi-tabs__code-item--curl > span,
+.openapi-tabs__code-item--go > span,
+.openapi-tabs__code-item--nodejs > span,
+.openapi-tabs__code-item--python > span,
+.openapi-tabs__code-item--php > span,
+.openapi-tabs__code-item--java > span {
+  font-size: 0 !important;
+}
+.openapi-tabs__code-item--curl > span::before {
+  content: 'cURL';
+}
+.openapi-tabs__code-item--go > span::before {
+  content: 'Go';
+}
+.openapi-tabs__code-item--nodejs > span::before {
+  content: 'Node.js';
+}
+.openapi-tabs__code-item--python > span::before {
+  content: 'Python';
+}
+.openapi-tabs__code-item--php > span::before {
+  content: 'PHP';
+}
+.openapi-tabs__code-item--java > span::before {
+  content: 'Java';
+}
+.openapi-tabs__code-item--curl > span::before,
+.openapi-tabs__code-item--go > span::before,
+.openapi-tabs__code-item--nodejs > span::before,
+.openapi-tabs__code-item--python > span::before,
+.openapi-tabs__code-item--php > span::before,
+.openapi-tabs__code-item--java > span::before {
+  font-size: 12.5px;
 }
 
-/* tone down the boxed sections (auth, request explorer) to brand hairlines */
-.openapi-security__details,
-.openapi-explorer__details-container,
-.openapi-explorer__details-outer-container {
+/* hide the lone variant/sample sub-tabs (e.g. "NATIVE"/"UNIREST") — the
+   default variant's code still shows; keeps the rail simple */
+.openapi-tabs__code-item--variant,
+.openapi-tabs__code-item--sample {
+  display: none !important;
+}
+
+/* code panel — let more of the sample show (theme caps it at 200px) */
+.openapi-explorer__code-block code {
+  max-height: 460px;
+}
+
+/* auth summary box → brand hairline, no shadow */
+.openapi-security__details {
   border-color: var(--vh-card-border) !important;
   border-radius: 12px;
+  box-shadow: none !important;
 }
 
 /* schema / param rows */
@@ -415,6 +455,12 @@ div[class*='codeBlockContainer_'] code {
 }
 .openapi-schema__required {
   color: #c0362c;
+}
+
+/* no shadows anywhere in the reference panels */
+.openapi-left-panel__container [class*='openapi'],
+.openapi-right-panel__container [class*='openapi'] {
+  box-shadow: none !important;
 }
 
 /* ---- sticky-footer layout ---- */
