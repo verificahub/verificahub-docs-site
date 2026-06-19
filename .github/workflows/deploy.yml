@@ -48,6 +48,13 @@ jobs:
           if [ -d external-docs/i18n ]; then
             mv external-docs/i18n ./i18n
           fi
+          # OpenAPI spec + examples source of truth lives in the docs repo
+          # (verificahub-docs/openapi/). If present, it overrides the fallback
+          # copy committed here; the API reference is generated from it at build.
+          if [ -d external-docs/openapi ]; then
+            cp -R external-docs/openapi/. ./openapi/
+            echo "Using OpenAPI spec from docs repo:"; ls -1 ./openapi/
+          fi
 
       - name: Verify copied docs content
         run: |
