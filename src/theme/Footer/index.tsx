@@ -12,7 +12,7 @@ type FLink = {label: string; to?: string; href?: string};
 
 const docLinks: FLink[] = [
   {label: 'Быстрый старт', to: '/docs/start/'},
-  {label: 'API', to: '/docs/api/'},
+  {label: 'API', to: '/docs/reference/verificahub-api/'},
   {label: 'Публичная оферта', to: '/docs/legal/public_offer/'},
   {label: 'Политика конфиденциальности', to: '/docs/legal/privacy_policy/'},
   {label: 'Условия использования', to: '/docs/legal/terms_of_use/'},

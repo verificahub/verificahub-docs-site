@@ -48,8 +48,8 @@ const DOC_GROUPS: DocGroup[] = [
     cards: [
       {
         title: 'API',
-        description: 'Единый эндпоинт и методы: reverse_flash_call и другие.',
-        href: '/docs/api/',
+        description: 'Справочник методов: эндпоинты, параметры и примеры запросов.',
+        href: '/docs/reference/verificahub-api/',
         badge: 'API',
       },
       {
@@ -99,7 +99,7 @@ export default function Home(): ReactNode {
                 <Link className={styles.quickFilter} to="/docs/start/">
                   быстрый старт
                 </Link>
-                <Link className={styles.quickFilter} to="/docs/api/">
+                <Link className={styles.quickFilter} to="/docs/reference/verificahub-api/">
                   api
                 </Link>
                 <Link className={styles.quickFilter} to="/docs/legal/public_offer/">

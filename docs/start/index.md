@@ -17,4 +17,4 @@ curl -X POST https://api.verificahub.ru/v1/verify \
   -d '{ "phone": "+79009009090", "method": "reverse_flash_call" }'
 ```
 
-Подробнее о методах — в разделе [API](../api).
+Подробнее о методах — в разделе [Справочник API](../reference/verificahub-api).
