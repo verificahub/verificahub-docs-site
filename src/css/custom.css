@@ -371,9 +371,20 @@ h2.openapi__method-endpoint-path::after {
 }
 .openapi-tabs__code-list-container {
   flex-wrap: wrap;
-  gap: 0.15rem;
-  padding: 0.45rem 0.55rem;
+  gap: 0.4rem;
+  padding: 0.5rem 0.7rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+/* the inner per-language "variant" selector (HTTP.CLIENT/REQUESTS, UNIREST…) is
+   hidden — also drop its empty tab bar + nested container chrome */
+ul.openapi-tabs__code-list-container.openapi-tabs__code-container-inner {
+  display: none !important;
+}
+.openapi-tabs__code-container.openapi-tabs__code-container-inner {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
 }
 /* language tabs: flat, lightly-rounded highlight (no individual pill borders,
    no hover effects, no colour shifts) */
@@ -546,6 +557,15 @@ h2.openapi__method-endpoint-path::after {
 .openapi-security__summary-container:hover {
   background-color: transparent !important;
   border-color: var(--vh-card-border) !important;
+}
+/* code action buttons stay visible instead of popping in on hover */
+.openapi-explorer__code-block-btn-group,
+.openapi-explorer__code-block-btn-group button,
+.openapi-right-panel__container [class*='buttonGroup_'],
+.openapi-left-panel__container [class*='buttonGroup_'] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: none !important;
 }
 
 /* ---- sticky-footer layout ---- */
