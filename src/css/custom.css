@@ -312,13 +312,14 @@ div[class*='codeBlockContainer_'] code {
   border-right: none;
 }
 
-/* section headings ("Описание", "Запрос", "Ответ"…) get a short lime accent */
-.openapi-left-panel__container h2 {
+/* section headings ("Описание", "Запрос", "Ответ"…) get a short lime accent.
+   Exclude the endpoint path, which the theme renders as an <h2> inside a <pre>. */
+.openapi-left-panel__container h2:not(.openapi__method-endpoint-path) {
   position: relative;
   padding-bottom: 0.55rem;
   margin-bottom: 1.1rem;
 }
-.openapi-left-panel__container h2::after {
+.openapi-left-panel__container h2:not(.openapi__method-endpoint-path)::after {
   content: '';
   position: absolute;
   left: 0;
@@ -329,35 +330,50 @@ div[class*='codeBlockContainer_'] code {
   background: var(--vh-lime-deep);
 }
 
-/* endpoint block → full-width rounded brand card */
+/* endpoint block → flat row card: [METHOD badge] [mono path] */
 .openapi__method-endpoint {
-  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 0.55rem;
-  padding: 0.7rem 0.85rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.7rem 0.9rem;
   border: 1px solid var(--vh-card-border);
   border-radius: 14px;
   background: var(--vh-surface);
+  white-space: normal;
 }
-.openapi__method-endpoint-path {
-  font-size: 13px;
+/* the path is an <h2> in the theme — strip all heading styling */
+h2.openapi__method-endpoint-path {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 13px !important;
+  font-weight: 500;
+  line-height: 1.4;
   color: var(--vh-ink);
 }
+h2.openapi__method-endpoint-path::after {
+  display: none !important;
+}
 
-/* language selector → plain text tabs (no 80px logo boxes, no devicon
-   network images, no shadows, no hover effects) */
+/* request samples = one cohesive dark code panel (editor-style): dark tab bar
+   on top of the dark code body. No logo boxes, shadows, or hover effects. */
 .openapi-tabs__code-container:not(.openapi-tabs__code-container-inner),
 .openapi-tabs__code-container:not(.openapi-tabs__code-container-inner):hover {
-  background: var(--vh-surface);
+  background: hsl(220, 13%, 18%); /* matches the oneDark code background */
   border: 1px solid var(--vh-card-border);
   border-radius: 14px;
   box-shadow: none !important;
   transition: none !important;
+  overflow: hidden;
 }
 .openapi-tabs__code-list-container {
   flex-wrap: wrap;
-  gap: 0.25rem; /* tabs sit in one rounded card; subtle spacing */
-  padding: 0.45rem 0.5rem;
-  border-bottom: 1px solid var(--vh-hairline);
+  gap: 0.15rem;
+  padding: 0.45rem 0.55rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 /* language tabs: flat, lightly-rounded highlight (no individual pill borders,
    no hover effects, no colour shifts) */
@@ -370,11 +386,11 @@ div[class*='codeBlockContainer_'] code {
   padding: 0.32rem 0.7rem !important;
   margin: 0 !important;
   border: 0 !important;
-  border-radius: 8px !important;
+  border-radius: 7px !important;
   background: transparent !important;
   box-shadow: none !important;
   transition: none !important;
-  color: var(--vh-text-muted) !important;
+  color: rgba(255, 255, 255, 0.55) !important;
 }
 .openapi-tabs__code-item::after {
   display: none !important; /* removes the externally-loaded devicon logos */
@@ -389,9 +405,8 @@ div[class*='codeBlockContainer_'] code {
 }
 .openapi-tabs__code-item.active,
 .openapi-tabs__code-item.active:hover {
-  background: var(--vh-ink) !important;
-  border-color: var(--vh-ink) !important;
-  color: var(--vh-bg) !important;
+  background: rgba(255, 255, 255, 0.13) !important;
+  color: #fff !important;
 }
 .openapi-tabs__code-item.active > span {
   font-weight: 600;
@@ -420,11 +435,21 @@ div[class*='codeBlockContainer_'] code {
   background: rgba(46, 160, 67, 0.16);
   color: #1a7f37;
 }
+.vh-api-sample__sublabel {
+  margin: 0 0 0.4rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vh-text-subtle);
+}
 /* flat code blocks (no shadow) — the dark fill carries the look */
 .vh-api-sample .theme-code-block,
 .vh-api-sample div[class*='codeBlockContainer_'] {
   box-shadow: none !important;
   border: 1px solid var(--vh-card-border);
+  margin-bottom: 0.8rem;
 }
 
 /* readable language labels (theme hardcodes the raw id: curl/go/nodejs/…) */
@@ -494,6 +519,33 @@ div[class*='codeBlockContainer_'] code {
 .openapi-left-panel__container [class*='openapi'],
 .openapi-right-panel__container [class*='openapi'] {
   box-shadow: none !important;
+}
+
+/* the code body sits flush inside the dark request-samples panel */
+.openapi-tabs__code-container .openapi-explorer__code-block,
+.openapi-tabs__code-container .theme-code-block,
+.openapi-tabs__code-container div[class*='codeBlockContainer_'] {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+
+/* remove hover state changes (border/background/shadow) across the reference */
+.theme-code-block:hover,
+.openapi-explorer__code-block:hover,
+.openapi-tabs__code-container:hover {
+  box-shadow: none !important;
+}
+.openapi-tabs__response-code-item:hover,
+.openapi-tabs__mime:hover,
+.openapi-tabs__schema:hover,
+.openapi-tabs__operation:hover,
+.openapi-security__details:hover,
+.openapi-security__summary-container:hover {
+  background-color: transparent !important;
+  border-color: var(--vh-card-border) !important;
 }
 
 /* ---- sticky-footer layout ---- */

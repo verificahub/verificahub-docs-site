@@ -12,6 +12,14 @@ import * as sdk from 'postman-collection';
  * docs-first right rail: auth summary → request code samples ("Пример запроса")
  * → response example ("Пример ответа"), à la the T-Bank dev portal.
  */
+const asJson = (ex: unknown): string =>
+  typeof ex === 'string' ? ex : JSON.stringify(ex, null, 2);
+
+function getRequestExample(item: NonNullable<ApiItem>): string | null {
+  const ex = (item as any).requestBody?.content?.['application/json']?.example;
+  return ex === undefined ? null : asJson(ex);
+}
+
 function getResponseExample(
   item: NonNullable<ApiItem>,
 ): {code: string; body: string} | null {
@@ -20,10 +28,7 @@ function getResponseExample(
   if (!code) return null;
   const ex = responses[code]?.content?.['application/json']?.example;
   if (ex === undefined) return null;
-  return {
-    code,
-    body: typeof ex === 'string' ? ex : JSON.stringify(ex, null, 2),
-  };
+  return {code, body: asJson(ex)};
 }
 
 export default function ApiExplorer({
@@ -52,6 +57,7 @@ export default function ApiExplorer({
     requestBody: item.requestBody,
   };
 
+  const requestExample = getRequestExample(item);
   const responseExample = getResponseExample(item);
 
   return (
@@ -61,6 +67,12 @@ export default function ApiExplorer({
       {item.method !== 'event' && (
         <section className="vh-api-sample">
           <div className="vh-api-sample__title">Пример запроса</div>
+          {requestExample && (
+            <>
+              <div className="vh-api-sample__sublabel">Тело запроса</div>
+              <CodeBlock language="json">{requestExample}</CodeBlock>
+            </>
+          )}
           <CodeSnippets {...codeSnippetProps} />
         </section>
       )}
