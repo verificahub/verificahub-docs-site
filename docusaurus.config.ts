@@ -68,7 +68,11 @@ const config: Config = {
 
   i18n: {
     defaultLocale: 'ru',
-    locales: ['ru'],
+    locales: ['ru', 'en'],
+    localeConfigs: {
+      ru: {label: 'Русский'},
+      en: {label: 'English'},
+    },
   },
 
   presets: [
@@ -152,6 +156,10 @@ const config: Config = {
         {
           href: 'https://verificahub.ru',
           label: 'На сайт',
+          position: 'right',
+        },
+        {
+          type: 'localeDropdown',
           position: 'right',
         },
         ...(hasDocSearchConfig
