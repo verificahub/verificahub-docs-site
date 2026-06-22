@@ -362,12 +362,18 @@ h2.openapi__method-endpoint-path::after {
    on top of the dark code body. No logo boxes, shadows, or hover effects. */
 .openapi-tabs__code-container:not(.openapi-tabs__code-container-inner),
 .openapi-tabs__code-container:not(.openapi-tabs__code-container-inner):hover {
-  background: hsl(220, 13%, 18%); /* matches the oneDark code background */
-  border: 1px solid var(--vh-card-border);
+  /* !important: the theme sets an equal-specificity light background + padding */
+  background: hsl(220, 13%, 18%) !important; /* matches the oneDark code bg */
+  border: 1px solid var(--vh-card-border) !important;
   border-radius: 14px;
+  padding: 0 !important;
   box-shadow: none !important;
   transition: none !important;
   overflow: hidden;
+}
+/* the tabpanel wrapper between the tab bar and the code adds a stray margin */
+.openapi-tabs__code-container > [role='tabpanel'] {
+  margin-top: 0 !important;
 }
 .openapi-tabs__code-list-container {
   flex-wrap: wrap;
@@ -506,16 +512,31 @@ ul.openapi-tabs__code-list-container.openapi-tabs__code-container-inner {
   display: none !important;
 }
 
-/* code panel — let more of the sample show (theme caps it at 200px) */
+/* code panel — let more of the sample show (theme caps it at 200px) and clear
+   the always-visible action buttons so they don't sit on the first line */
 .openapi-explorer__code-block code {
   max-height: 460px;
 }
+.openapi-tabs__code-container .openapi-explorer__code-block pre {
+  padding-top: 2.5rem !important;
+}
+.openapi-explorer__code-block-btn-group {
+  top: 0.55rem !important;
+}
 
-/* auth summary box → brand hairline, no shadow */
+/* auth summary box → compact brand hairline card */
 .openapi-security__details {
   border-color: var(--vh-card-border) !important;
   border-radius: 12px;
   box-shadow: none !important;
+  background: var(--vh-surface);
+  margin-bottom: 1.5rem;
+}
+.openapi-security__summary-header {
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em;
+  color: var(--vh-text-muted) !important;
 }
 
 /* schema / param rows */

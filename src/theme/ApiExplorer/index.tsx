@@ -3,6 +3,8 @@ import {useDoc} from '@docusaurus/plugin-content-docs/client';
 import CodeBlock from '@theme/CodeBlock';
 import CodeSnippets from '@theme/ApiExplorer/CodeSnippets';
 import SecuritySchemes from '@theme/ApiExplorer/SecuritySchemes';
+import {useTypedDispatch, useTypedSelector} from '@theme/ApiItem/hooks';
+import {setServer} from '@theme/ApiExplorer/Server/slice';
 import type {ApiItem} from 'docusaurus-plugin-openapi-docs/src/types';
 import * as sdk from 'postman-collection';
 
@@ -42,6 +44,20 @@ export default function ApiExplorer({
   const {mask_credentials} = metadata.frontMatter as {
     mask_credentials?: boolean;
   };
+
+  // The upstream Server component (removed with the explorer) is what seeds the
+  // store's server value; without it, code samples fall back to the page origin
+  // (docs.verificahub.ru). Seed it here so {{baseUrl}} resolves to the API host.
+  const dispatch = useTypedDispatch();
+  const serverValue = useTypedSelector((state: any) => state.server?.value);
+  const serverOptions = useTypedSelector((state: any) => state.server?.options);
+  React.useEffect(() => {
+    if (serverValue) return;
+    const option =
+      (Array.isArray(serverOptions) && serverOptions[0]) ||
+      (item as any).servers?.[0];
+    if (option) dispatch(setServer(JSON.stringify(option)));
+  }, [dispatch, serverValue, serverOptions, item]);
   const postman = new sdk.Request(
     item.postman
       ? sdk.Request.isRequest(item.postman)
