@@ -75,6 +75,11 @@ const config: Config = {
     },
   },
 
+  // Render ```mermaid fenced blocks as diagrams (used by the integration guide).
+  markdown: {
+    mermaid: true,
+  },
+
   presets: [
     [
       'classic',
@@ -117,7 +122,7 @@ const config: Config = {
     ],
   ],
 
-  themes: ['docusaurus-theme-openapi-docs'],
+  themes: ['docusaurus-theme-openapi-docs', '@docusaurus/theme-mermaid'],
 
   themeConfig: {
     image: 'img/social-card.png',
