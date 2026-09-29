@@ -104,11 +104,26 @@ const config: Config = {
         id: 'openapi',
         docsPluginId: 'classic',
         config: {
+          // Русская справка — локаль по умолчанию, поэтому кладётся в docs/.
+          // normalized.ru.json собирается `npm run prepare-api`: английская
+          // спецификация плюс переводы из openapi/ru-overlay.json.
           v1: {
-            // normalized.json is produced by `npm run prepare-api` from the
-            // pristine openapi/verificahub-api-v1.json (sets the prod server).
-            specPath: 'openapi/normalized.json',
+            specPath: 'openapi/normalized.ru.json',
             outputDir: 'docs/reference',
+            downloadUrl:
+              'https://docs.verificahub.ru/openapi/verificahub-api-v1.ru.json',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+            },
+            hideSendButton: true,
+          } satisfies OpenApiPlugin.Options,
+          // Английская справка — перевод локали en, поэтому кладётся в i18n/en.
+          // Спецификация здесь исходная, как её экспортирует бэкенд.
+          v1en: {
+            specPath: 'openapi/normalized.json',
+            outputDir:
+              'i18n/en/docusaurus-plugin-content-docs/current/reference',
             downloadUrl:
               'https://docs.verificahub.ru/openapi/verificahub-api-v1.json',
             sidebarOptions: {

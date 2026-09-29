@@ -71,6 +71,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Не блокирует деплой: непереведённая строка отрендерится по-английски, и это
+      # лучше отсутствующей страницы. Шаг нужен, чтобы расхождение было видно сразу
+      # после экспорта новой спецификации, а не через месяц на сайте.
+      - name: Check Russian OpenAPI translations
+        run: npm run api:i18n -- --check
+        continue-on-error: true
+
       - name: Build site
         run: npm run build
         env:
