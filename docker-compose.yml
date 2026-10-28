@@ -1,0 +1,24 @@
+# Production deployment of docs.verificahub.ru.
+#
+# Static site in nginx behind the host's nginx, same shape as the landing: the
+# container listens on localhost only and the public vhost proxies to it.
+services:
+  verificahub-docs:
+    image: ghcr.io/verificahub/verificahub-docs-site:${IMAGE_TAG:-latest}
+    pull_policy: always
+    container_name: verificahub-docs
+    restart: unless-stopped
+    ports:
+      # localhost-only: reached through the host's nginx, never the public network.
+      - "127.0.0.1:8091:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,220 @@
+name: Deploy docs to VPS (GHCR + SSH)
+
+# build (content from verificahub-docs) → push image to GHCR → SSH to the VPS →
+# docker compose pull & roll the container, behind the host's nginx.
+#
+# Replaces the GitHub Pages deploy. The content still comes from the docs repo,
+# the build is still Docusaurus — only the hosting moved onto our own server.
+on:
+  push:
+    branches: [production]
+  # Fired by verificahub-docs when its content changes, same as the Pages deploy.
+  repository_dispatch:
+    types: [docs-update]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-docs-vps
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout engine repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Clone docs repo
+        run: |
+          if [ -n "${{ secrets.DOCS_REPO_TOKEN }}" ]; then
+            git clone https://x-access-token:${{ secrets.DOCS_REPO_TOKEN }}@github.com/verificahub/verificahub-docs.git external-docs
+          else
+            git clone https://github.com/verificahub/verificahub-docs.git external-docs
+          fi
+
+      - name: Replace docs and i18n folders
+        run: |
+          rm -rf docs
+          test -d external-docs/docs
+          mv external-docs/docs ./docs
+          rm -rf i18n
+          if [ -d external-docs/i18n ]; then
+            mv external-docs/i18n ./i18n
+          fi
+          # OpenAPI spec + examples source of truth lives in the docs repo
+          # (verificahub-docs/openapi/). If present, it overrides the fallback
+          # copy committed here; the API reference is generated from it at build.
+          if [ -d external-docs/openapi ]; then
+            cp -R external-docs/openapi/. ./openapi/
+            echo "Using OpenAPI spec from docs repo:"; ls -1 ./openapi/
+          fi
+
+      - name: Verify copied docs content
+        run: |
+          test -f docs/index.md || (echo "docs/index.md missing after copy" && exit 1)
+
+      - name: Copy registry links for static endpoint
+        working-directory: external-docs
+        run: |
+          if [ -f registry/links.json ]; then
+            mkdir -p ../static
+            cp registry/links.json ../static/links.json
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Не блокирует деплой: непереведённая строка отрендерится по-английски, и это
+      # лучше отсутствующей страницы. Шаг нужен, чтобы расхождение было видно сразу
+      # после экспорта новой спецификации, а не через месяц на сайте.
+      - name: Check Russian OpenAPI translations
+        run: npm run api:i18n -- --check
+        continue-on-error: true
+
+      - name: Build site
+        run: npm run build
+        env:
+          DOCSEARCH_APP_ID: ${{ secrets.DOCSEARCH_APP_ID }}
+          DOCSEARCH_API_KEY: ${{ secrets.DOCSEARCH_API_KEY }}
+          DOCSEARCH_INDEX_NAME: ${{ secrets.DOCSEARCH_INDEX_NAME }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=long
+
+      # The image only packages `build/`, which the step above just produced —
+      # so no cache here: there is nothing to reuse between runs but a COPY.
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    needs: build-push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    environment:
+      name: production
+      url: https://docs.verificahub.ru
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Ship compose + roll container
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ vars.SSH_HOST }}
+          SSH_USER: ${{ vars.SSH_USER }}
+          SSH_PORT: ${{ vars.SSH_PORT }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: sha-${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          PORT="${SSH_PORT:-22}"
+          DEPLOY_PATH="${DEPLOY_PATH:-/opt/verificahub-docs-site}"
+          KEY="$HOME/.ssh/id_deploy"
+
+          mkdir -p "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$KEY"
+          chmod 600 "$KEY"
+
+          # Verify the host key. Prefer the pinned SSH_KNOWN_HOSTS secret; otherwise
+          # fall back to ssh-keyscan (trust-on-first-use — see docs to pin it).
+          if [ -n "${SSH_KNOWN_HOSTS:-}" ]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          else
+            ssh-keyscan -p "$PORT" "$SSH_HOST" >> "$HOME/.ssh/known_hosts" 2>/dev/null
+          fi
+          chmod 644 "$HOME/.ssh/known_hosts"
+
+          SSHOPTS="-i $KEY -o Port=$PORT -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
+          REMOTE="$SSH_USER@$SSH_HOST"
+
+          # Ship the compose file over direct ssh (stdin → remote `cat`), no scp.
+          ssh $SSHOPTS "$REMOTE" "mkdir -p '$DEPLOY_PATH'"
+          ssh $SSHOPTS "$REMOTE" "cat > '$DEPLOY_PATH/docker-compose.yml'" < docker-compose.yml
+
+          # The path from this host to GitHub's edge drops packets: roughly one TLS handshake in ten to
+          # ghcr.io stalls on retransmit backoff, which trips Docker's ~10s handshake timeout. The loss
+          # is upstream — docker.io is clean from the same box — and the image is already pushed by
+          # here, so retry the steps that talk to ghcr.io.
+          retry() {
+            for attempt in 1 2 3 4 5; do
+              "$@" && return 0
+              echo "::warning::$1 failed (attempt $attempt/5), retrying in $((attempt * 5))s"
+              sleep $((attempt * 5))
+            done
+            echo "::error::$1 failed after 5 attempts"
+            return 1
+          }
+          # Into ~/.docker-ci, NOT the shared ~/.docker: the run token expires with the run, so writing
+          # it to the shared credential file silently breaks every stack that pulls with it (how id-api
+          # and max-bot came to answer "denied", 2026-10-18).
+          ghcr_login() {
+            printf '%s' "$GHCR_TOKEN" | ssh $SSHOPTS "$REMOTE" \
+              "mkdir -p \"\$HOME/.docker-ci\" && DOCKER_CONFIG=\"\$HOME/.docker-ci\" docker login ghcr.io -u '$GHCR_USER' --password-stdin"
+          }
+          remote_pull() {
+            ssh $SSHOPTS "$REMOTE" \
+              "cd '$DEPLOY_PATH' && printf 'IMAGE_TAG=%s\n' '$TAG' > .env && DOCKER_CONFIG=\"\$HOME/.docker-ci\" docker compose pull"
+          }
+          retry ghcr_login
+          retry remote_pull
+
+          # Pin the exact image and roll the container, waiting for its HEALTHCHECK
+          # before pruning the old image. We do NOT `docker logout` — that would wipe
+          # the shared ghcr.io credential other services on this host rely on.
+          ssh $SSHOPTS "$REMOTE" "set -e; cd '$DEPLOY_PATH'; \
+            DOCKER_CONFIG=\"\$HOME/.docker-ci\" docker compose up -d --remove-orphans; \
+            for i in \$(seq 1 20); do \
+              s=\$(docker inspect -f '{{.State.Health.Status}}' verificahub-docs 2>/dev/null || echo none); \
+              [ \"\$s\" = healthy ] && break; \
+              echo \"waiting for container health: \$s\"; sleep 3; \
+            done; \
+            [ \"\$(docker inspect -f '{{.State.Health.Status}}' verificahub-docs)\" = healthy ] || { echo 'container did not become healthy'; docker compose logs --tail=80 verificahub-docs; exit 1; }; \
+            docker image prune -f"
+
+      - name: Smoke-check the public URL (informational)
+        # Non-fatal: whether docs.verificahub.ru reaches this container depends on
+        # DNS pointing at the VPS and on the host nginx vhost. The authoritative
+        # gate is the container-health check above.
+        run: |
+          for i in 1 2 3; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' https://docs.verificahub.ru/ || true)
+            echo "attempt $i -> HTTP $code"
+            [ "$code" = "200" ] && break
+            sleep 5
+          done
